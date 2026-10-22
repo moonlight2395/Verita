@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Verita prototype</title>
+<style>
+:root{--bg:#f6f5fb;--card:#fff;--ink:#1c1b2e;--muted:#6a6880;--line:#e3e1f0;--acc:#5b3df5;--acc2:#e8e3ff;--good:#14975f;--warn:#c27c00;--bad:#d6334a;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15141f;--card:#1f1e2d;--ink:#eeedf8;--muted:#a09eb8;--line:#33324a;--acc:#9b86ff;--acc2:#2c2750;--good:#3ccf91;--warn:#f2b441;--bad:#ff6b81;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#15141f;--card:#1f1e2d;--ink:#eeedf8;--muted:#a09eb8;--line:#33324a;--acc:#9b86ff;--acc2:#2c2750;--good:#3ccf91;--warn:#f2b441;--bad:#ff6b81;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.hero{background:linear-gradient(120deg,#5b3df5,#e0457b 60%,#ff9a3c);color:#fff;padding:26px 20px 58px}
+.w,main,.tabs{max-width:960px;margin:0 auto}
+h1{margin:0;font-size:28px}.sub{margin:4px 0 0;opacity:.92}
+h3{margin:16px 0 8px;font-size:14px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:-32px;padding:0 20px 16px}
+.tab{border:0;background:var(--card);color:var(--ink);padding:10px 16px;border-radius:999px;font:inherit;font-weight:600;cursor:pointer;box-shadow:0 2px 8px #0003}
+.tab[aria-selected=true]{background:var(--acc);color:#fff}
+main{padding:0 20px 36px}
+.pane{display:none}.pane.on{display:block}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:720px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}
+label{display:block;font-size:12px;color:var(--muted);margin:10px 0 3px;font-weight:600}
+input,select,textarea{width:100%;padding:9px 10px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit}
+input[type=range]{padding:0}
+.big{font-size:32px;font-weight:700;color:var(--acc);line-height:1.2}
+.chip{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:600;background:var(--acc2);color:var(--acc);margin:2px 4px 2px 0}
+.ok{background:#14975f26;color:var(--good)}.bd{background:#d6334a26;color:var(--bad)}.wr{background:#d98a0026;color:var(--warn)}
+.good{color:var(--good)}.bad{color:var(--bad)}.warn{color:var(--warn)}
+.bar{height:8px;border-radius:4px;background:var(--line);overflow:hidden}.bar i{display:block;height:100%;border-radius:4px}
+.row{display:flex;justify-content:space-between;gap:8px;font-size:13px;margin-bottom:3px}
+.note{font-size:12px;color:var(--muted)}
+.btn{background:var(--acc);color:#fff;border:0;padding:10px 16px;border-radius:8px;font:inherit;font-weight:600;cursor:pointer;margin-top:10px}
+.seg{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px;border-radius:8px;font:inherit;font-weight:600;cursor:pointer;margin:0 8px 10px 0}
+.seg.on{background:var(--acc2);border-color:var(--acc);color:var(--acc)}
+.sig{display:flex;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:14px}
+.sig b{width:18px}.rk{font-size:22px;font-weight:700;color:var(--acc);width:28px}
+.f{display:flex;gap:10px;align-items:flex-start}
+footer{max-width:960px;margin:0 auto;padding:0 20px 28px;font-size:12px;color:var(--muted)}
+</style></head><body>
+<div class="hero"><div class="w"><h1>Verita</h1><p class="sub">Prototype: explainable valuation, authenticity, matching and value-based bids</p></div></div>
+<div class="tabs" role="tablist">
+<button class="tab" role="tab" data-t="val" aria-selected="true">1 · Valuation</button>
+<button class="tab" role="tab" data-t="aut" aria-selected="false">2 · Authenticity</button>
+<button class="tab" role="tab" data-t="mat" aria-selected="false">3 · Matching</button>
+<button class="tab" role="tab" data-t="bid" aria-selected="false">4 · Bids</button></div>
+<main>
+<section class="pane on" id="val"><div class="grid">
+<div class="card"><b>Creator and deliverable</b>
+<label>Followers</label><input id="fol" type="number" value="40000" min="0">
+<label>Engagement rate (%)</label><input id="eng" type="number" value="4.2" step="0.1" min="0">
+<label>Verification tier</label><select id="tier"><option value="1">Tier 1 · public data only</option><option value="2" selected>Tier 2 · connected account</option><option value="3">Tier 3 · platform-verified</option></select>
+<label>Authenticity risk</label><select id="risk"><option value="low">Low</option><option value="med">Medium</option><option value="high">High</option></select>
+<label>Niche</label><select id="niche"><option>fitness</option><option>tech</option><option>food</option><option>fashion</option><option>beauty</option><option>finance</option><option>travel</option></select>
+<label>Format</label><select id="fmt"><option value="reel">Reel</option><option value="post">Post</option><option value="story">Story</option><option value="video">YouTube video</option></select>
+<label>Usage rights</label><select id="rights"><option value="organic">Organic only</option><option value="ads3">Paid ads, 3 months</option><option value="ads12">Paid ads, 12 months</option></select>
+<label>Exclusivity</label><select id="excl"><option value="none">None</option><option value="d30">30 days</option><option value="d90">90 days</option></select></div>
+<div class="card"><div class="note">Suggested price range, one deliverable</div><div class="big" id="rng"></div>
+<div id="conf" style="font-weight:600"></div><div class="bar" style="margin:8px 0"><i id="meter" style="background:var(--acc)"></i></div>
+<h3>What moves the price</h3><div id="drv"></div>
+<h3>What if?</h3><div id="wi" style="font-size:14px"></div>
+<p class="note">A benchmark with reasons, not a guarantee. Illustrative model on synthetic data.</p></div></div></section>
+
+<section class="pane" id="aut"><div id="aseg"></div><div class="card" id="adet"></div></section>
+
+<section class="pane" id="mat"><div class="card"><b>Paste a rough brand brief</b>
+<textarea id="brief" rows="3">Launching a protein bar for college students in North India. Budget ₹80,000 for 2 Reels and some stories.</textarea>
+<button class="btn" id="go">Match creators</button></div><div id="mres"></div></section>
+
+<section class="pane" id="bid"><div class="grid">
+<div class="card"><b>What matters to this brand</b><p class="note">Campaign: 1 Reel. Fair range for this creator tier: ₹5,000 – ₹7,500.</p>
+<label>Fit</label><input type="range" id="wf" min="0" max="5" value="3">
+<label>Authenticity</label><input type="range" id="wa" min="0" max="5" value="3">
+<label>Delivery record</label><input type="range" id="wd" min="0" max="5" value="2">
+<label>Price vs fair range</label><input type="range" id="wp" min="0" max="5" value="2"></div>
+<div id="bres"></div></div></section>
+</main>
+<footer>Synthetic demo data for the Confluentia ’26 proposal. Not real creators, prices or results.</footer>
+<script>
+const $=s=>document.querySelector(s),R=n=>'₹'+(Math.round(n/100)*100).toLocaleString('en-IN');
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',x===b));document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.t))});
+const NM={fitness:1.15,tech:1.25,food:1,fashion:1.1,beauty:1.2,finance:1.4,travel:1.05},RM={organic:1,ads3:1.35,ads12:1.9},XM={none:1,d30:1.15,d90:1.4},BS={reel:100,post:65,story:32,video:160},AF={low:.95,med:.7,high:.4},W={1:.4,2:.22,3:.12};
+function calc(){const v=id=>$('#'+id).value,f=+v('fol')||0,e=+v('eng')||0,t=+v('tier');
+const eF=Math.min(2,Math.max(.5,e/3)),a=AF[v('risk')],n=NM[v('niche')],r=RM[v('rights')],x=XM[v('excl')];
+const mid=f*a/1000*BS[v('fmt')]*eF*n*r*x,w=W[t];
+$('#rng').textContent=R(mid*(1-w))+' – '+R(mid*(1+w));
+$('#conf').textContent=['','Low','High','Highest'][t]+' confidence (Tier '+t+')';
+$('#meter').style.width=(100-w/.4*70)+'%';
+const D=[['Audience authenticity',a],['Engagement quality',eF],['Niche',n],['Usage rights',r],['Exclusivity',x]];
+$('#drv').innerHTML=D.map(([k,m])=>{const p=Math.round((m-1)*100);return `<div class="row"><span>${k}</span><b class="${p>0?'good':p<0?'bad':''}">${p>0?'+':''}${p}%</b></div><div class="bar" style="margin-bottom:8px"><i style="width:${Math.min(100,Math.abs(p))}%;background:var(${p<0?'--bad':p>0?'--good':'--line'})"></i></div>`}).join('');
+$('#wi').textContent=t==1?`Connecting an account (Tier 2) would narrow this to ${R(mid*.78)} – ${R(mid*1.22)}.`:t==2?'Delivering a campaign on Verita (Tier 3) would narrow the range further.':'Fully verified: the narrowest range this model gives.'}
+document.querySelectorAll('#val input,#val select').forEach(e=>e.oninput=calc);
+
+const CR=[{n:'Riya Sen',h:'Fitness · 40k followers · Tier 2 (connected account)',k:'Low',s:18,g:[['Follower growth','Steady, no sudden spikes','ok'],['Engagement vs peers','4.2% against about 3.8% typical','ok'],['Comment diversity','Varied, on-topic comments','ok'],['Audience geography','82% India, matches the profile claim','ok'],['Public vs API numbers','Within 3%','ok']]},
+{n:'Karan Malik',h:'Fitness · 40k followers · Tier 1 (public data only)',k:'High',s:81,g:[['Follower growth','+14k in two days, then flat','bad'],['Engagement vs peers','1.1% against about 3.8% typical','bad'],['Comment diversity','63% generic or repeated comments','bad'],['Audience geography','Cannot verify without API data','warn'],['Public vs API numbers','No API connection to compare','warn']]}];
+let ci=0;
+function auth(){const c=CR[ci],col=c.k=='Low'?'good':'bad',ic={ok:'✓',warn:'!',bad:'✕'};
+$('#aseg').innerHTML=CR.map((x,i)=>`<button class="seg ${i==ci?'on':''}" data-i="${i}">${x.n}</button>`).join('');
+document.querySelectorAll('.seg').forEach(b=>b.onclick=()=>{ci=+b.dataset.i;auth()});
+$('#adet').innerHTML=`<div class="f"><div style="flex:1"><b>${c.n}</b><div class="note">${c.h}</div></div><div style="text-align:right"><div class="big ${col}">${c.k} risk</div><div class="note">score ${c.s} of 100</div></div></div>
+<div class="bar" style="margin:10px 0"><i style="width:${c.s}%;background:var(--${col})"></i></div>
+${c.g.map(([a,b,k])=>`<div class="sig"><b class="${k=='ok'?'good':k}">${ic[k]}</b><div style="flex:1"><b style="width:auto">${a}</b><div class="note">${b}</div></div></div>`).join('')}
+<p class="note">A flag is a prompt for human review, not an accusation. Creators can respond or submit proof.</p>`}
+
+const KW={fitness:['protein','gym','fitness','workout','health'],food:['snack','food','recipe','bar','beverage'],beauty:['skincare','makeup','beauty'],tech:['app','gadget','tech','phone'],fashion:['fashion','clothing','apparel']},
+RG={north:['north india','delhi','punjab','lucknow','varanasi','chandigarh'],south:['south india','bengaluru','chennai','hyderabad'],west:['mumbai','pune','gujarat','west india'],east:['kolkata','east india']},
+MC=[['Riya Sen','fitness','north',40000,2,'low',4.2,6000],['Aarav Gupta','fitness','north',85000,2,'low',3.1,11000],['Karan Malik','fitness','north',40000,1,'high',1.1,2000],['Simran Kaur','food','north',28000,2,'low',5,4000],['Dev Patel','fitness','west',52000,3,'low',3.8,7500],['Neha Rao','beauty','south',61000,2,'med',2.4,8000],['Ishaan Roy','tech','east',33000,1,'low',3.5,4500],['Tanya Jain','fitness','north',18000,2,'low',5.6,2800]];
+function match(){const t=$('#brief').value.toLowerCase(),m=t.match(/(?:₹|rs\.?|inr)\s*([\d,]+)\s*(k)?/i),bud=m?parseInt(m[1].replace(/,/g,''))*(m[2]?1000:1):0,
+ni=Object.keys(KW).filter(k=>KW[k].some(w=>t.includes(w))),reg=Object.keys(RG).find(k=>RG[k].some(w=>t.includes(w)));
+const rows=MC.map(([n,nc,rc,f,tr,rk,en,pr])=>{const cost=pr*2,why=[];let s=0;
+if(ni.includes(nc)){s+=40;why.push('niche fits ('+nc+')')}else{s+=6;why.push('niche is off-brief ('+nc+')')}
+if(!reg){s+=14}else if(rc==reg){s+=20;why.push('in the '+rc+' region')}else{s+=6;why.push('outside the '+reg+' region')}
+if(!bud){s+=10}else if(cost<=bud*.5){s+=20;why.push('2 Reels about '+R(cost)+', well inside budget')}else if(cost<=bud){s+=14;why.push('2 Reels about '+R(cost)+', inside budget')}else why.push('2 Reels about '+R(cost)+', over budget');
+s+=rk=='low'?20:rk=='med'?10:0;why.push('authenticity risk '+rk+', Tier '+tr);return{n,s,why,f,en}}).sort((a,b)=>b.s-a.s).slice(0,5);
+$('#mres').innerHTML=`<div class="card"><b>What we understood</b><div>${ni.map(x=>`<span class="chip">niche: ${x}</span>`).join('')||'<span class="chip wr">no niche found</span>'}<span class="chip">${reg?'region: '+reg:'region: any'}</span><span class="chip">${bud?'budget: '+R(bud):'budget: not given'}</span></div></div>`+
+rows.map((r,i)=>`<div class="card"><div class="f"><div class="rk">${i+1}</div><div style="flex:1"><div class="row"><b>${r.n}</b><b>Fit ${r.s}/100</b></div><div class="bar" style="margin:6px 0"><i style="width:${r.s}%;background:var(--acc)"></i></div><div class="note">${(r.f/1000)}k followers · ${r.en}% engagement</div><div style="font-size:14px;margin-top:4px">Why: ${r.why.join('; ')}.</div></div></div></div>`).join('')}
+
+const BD=[{n:'Karan Malik',p:3200,f:70,a:19,d:40,x:'Tier 1, new to the platform'},{n:'Riya Sen',p:6000,f:92,a:82,d:96,x:'Tier 2, 96% on time'},{n:'Aarav Gupta',p:9500,f:85,a:88,d:90,x:'Tier 2, 90% on time'}],LO=5000,HI=7500;
+function bids(){const w=['wf','wa','wd','wp'].map(i=>+$('#'+i).value),S=w.reduce((a,b)=>a+b,0)||1;
+const rows=BD.map(b=>{const ps=b.p<LO?55:b.p<=HI?100:Math.max(20,100-(b.p-HI)/HI*100);return{...b,ps,v:(b.f*w[0]+b.a*w[1]+b.d*w[2]+ps*w[3])/S,pos:b.p<LO?['Below fair range','wr']:b.p<=HI?['Within fair range','ok']:['Above fair range','wr']}}).sort((a,b)=>b.v-a.v),ch=BD.reduce((m,b)=>b.p<m.p?b:m).n;
+$('#bres').innerHTML=`<div class="card" style="background:var(--acc2)"><b>Top by value: ${rows[0].n}.</b> Cheapest-first would have picked ${ch}${ch==rows[0].n?'.':', a flagged bid.'}</div>`+
+rows.map((r,i)=>`<div class="card"><div class="f"><div class="rk">${i+1}</div><div style="flex:1"><div class="row"><b>${r.n}</b><b>${R(r.p)}</b></div><span class="chip ${r.pos[1]}">${r.pos[0]}</span>${r.p<LO?'<span class="chip bd">Unusually low: check scope and quality</span>':''}<div class="bar" style="margin:6px 0"><i style="width:${r.v}%;background:var(--acc)"></i></div><div class="row"><span class="note">Value score</span><b>${Math.round(r.v)}/100</b></div><div class="note">Fit ${r.f} · Authenticity ${r.a} · Delivery ${r.d} · Price ${Math.round(r.ps)} · ${r.x}</div></div></div></div>`).join('')}
+document.querySelectorAll('#bid input').forEach(e=>e.oninput=bids);
+$('#go').onclick=match;
+calc();auth();match();bids();
+</script></body></html>
